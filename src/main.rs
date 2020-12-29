@@ -1,9 +1,6 @@
 #![no_std]
 #![no_main]
 
-const WIDTH: i32 = 160;
-const HEIGHT: i32 = 80;
-
 use panic_halt as _;
 
 use embedded_graphics::fonts::{Font6x8, Text};
@@ -37,12 +34,6 @@ fn main() -> ! {
     let mut lcd = lcd::configure(dp.SPI0, lcd_pins, &mut afio, &mut rcu);
     let (width, height) = (lcd.size().width as i32, lcd.size().height as i32);
 
-    // Clear screen
-    //Rectangle::new(Point::new(0, 0), Point::new(width - 1, height - 1))
-    //    .into_styled(primitive_style!(fill_color = Rgb565::BLACK))
-    //    .draw(&mut lcd)
-    //    .unwrap();
-
     let style = text_style!(
         font = Font6x8,
         text_color = Rgb565::BLACK,
@@ -58,26 +49,20 @@ fn main() -> ! {
 
     let mut delay = McycleDelay::new(&rcu.clocks);
 
-    let mut i = WIDTH / 2;
+    let mut i = width / 2;
 
     loop {
-        Rectangle::new(Point::new(0, 0), Point::new(width - 1, height - 1))
-            .into_styled(primitive_style!(fill_color = Rgb565::BLACK))
-            .draw(&mut lcd)
-            .unwrap();
+        lcd.clear(Rgb565::BLACK).unwrap();
 
-        i = text.chars().clone().enumerate().fold(i, |x, (idx, _)| {
-            Text::new(&text[idx..idx + 1], Point::new(x, 35))
+        text.chars().enumerate().for_each(|(idx, _)| {
+            Text::new(&text[idx..idx + 1], Point::new(i + (idx * 6) as i32, 35))
                 .into_styled(style)
                 .draw(&mut lcd)
                 .unwrap();
-            if x == 0 {
-                WIDTH
-            } else {
-                x - 1
-            }
         });
 
-        delay.delay_ms(500);
+        i = (i + 1) % width;
+
+        delay.delay_ms(33);
     }
 }
