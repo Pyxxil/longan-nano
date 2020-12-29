@@ -1,0 +1,12 @@
+[package]
+name = "testing"
+version = "0.1.0"
+authors = ["Joshua Hill <josh@pyxxilated.studio>"]
+edition = "2018"
+
+[dependencies]
+longan-nano = { features = [ "lcd" ], git = "https://github.com/riscv-rust/longan-nano" }
+panic-halt = "0.2.0"
+embedded-graphics = "0.6"
+riscv-rt = "0.8.0"
+gd32vf103xx-hal = "0.4.0"
