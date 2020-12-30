@@ -40,15 +40,15 @@ fn main() -> ! {
         background_color = Rgb565::BLACK
     );
 
-    let text = "Hi!";
+    let text = " Hi! ";
 
     let mut delay = McycleDelay::new(&rcu.clocks);
 
     let mut i = width / 2;
 
-    loop {
-        lcd.clear(Rgb565::BLACK).unwrap();
+    delay.delay_ms(10000);
 
+    loop {
         (0..text.len())
             .map(|idx| {
                 Text::new(
@@ -59,8 +59,12 @@ fn main() -> ! {
             })
             .for_each(|ch| ch.draw(&mut lcd).unwrap());
 
-        i = if i - 6 < 0 { width } else { i - 6 };
+        if i == 0 {
+            i = width;
+        } else {
+            i = i - 1;
+        }
 
-        delay.delay_ms(50);
+        delay.delay_ms(16);
     }
 }
