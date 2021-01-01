@@ -189,6 +189,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rand"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a76330fb486679b4ace3670f117bbc9e16204005c4bde9c4bd372f45bed34f12"
+dependencies = [
+ "rand_core 0.6.0",
+]
+
+[[package]]
 name = "rand_core"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -202,6 +211,12 @@ name = "rand_core"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9c33a3c44ca05fa6f1807d8e6743f3824e8509beca625669633be0acbdf509dc"
+
+[[package]]
+name = "rand_core"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a8b34ba8cfb21243bd8df91854c830ff0d785fff2e82ebd4434c2644cb9ada18"
 
 [[package]]
 name = "regex"
@@ -252,7 +267,7 @@ checksum = "3525f8341898dec060782087b7a15969e1cfe52818afacc47709265c19a23d53"
 dependencies = [
  "proc-macro2",
  "quote",
- "rand",
+ "rand 0.5.6",
  "syn",
 ]
 
@@ -322,6 +337,7 @@ dependencies = [
  "gd32vf103xx-hal",
  "longan-nano",
  "panic-halt",
+ "rand 0.8.0",
  "riscv-rt",
 ]
 

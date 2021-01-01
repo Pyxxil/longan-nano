@@ -14,6 +14,8 @@ use gd32vf103xx_hal::prelude::*;
 use longan_nano::{lcd, lcd_pins};
 use riscv_rt::entry;
 
+use rand::prelude::*;
+
 #[entry]
 fn main() -> ! {
     let dp = pac::Peripherals::take().unwrap();
@@ -32,7 +34,7 @@ fn main() -> ! {
 
     let lcd_pins = lcd_pins!(gpioa, gpiob);
     let mut lcd = lcd::configure(dp.SPI0, lcd_pins, &mut afio, &mut rcu);
-    let (width, _) = (lcd.size().width as i32, lcd.size().height as i32);
+    let (width, height) = (lcd.size().width as i32, lcd.size().height as i32);
 
     let style = text_style!(
         font = Font6x8,
@@ -48,21 +50,34 @@ fn main() -> ! {
 
     delay.delay_ms(10000);
 
+    // Just in case it doesn't already have a completely blank screen
+    lcd.clear(Rgb565::BLACK)
+        .expect("Failed to clear the screen");
+
+    let mut rng = rand::rngs::SmallRng::from_seed([
+        0x0, 0xD, 0xD, 0xB, 0x1, 0xA, 0x5, 0xE, 0x5, 0xB, 0xA, 0xD, 0x5, 0xE, 0xE, 0xD,
+    ]);
+
+    let mut y = rng.gen_range(0..height);
+
     loop {
-        (0..text.len())
-            .map(|idx| {
-                Text::new(
-                    &text[idx..idx + 1],
-                    Point::new((i + (idx * 6) as i32) % width, 35),
-                )
-                .into_styled(style)
-            })
-            .for_each(|ch| ch.draw(&mut lcd).unwrap());
+        (0..text.len()).for_each(|idx| {
+            Text::new(
+                &text[idx..=idx],
+                Point::new((i + (idx * 6) as i32) % width, y),
+            )
+            .into_styled(style)
+            .draw(&mut lcd)
+            .unwrap()
+        });
 
         if i == 0 {
+            lcd.clear(Rgb565::BLACK)
+                .expect("Failed to clear the screen");
+            y = rng.gen_range(0..height);
             i = width;
         } else {
-            i = i - 1;
+            i -= 1;
         }
 
         delay.delay_ms(16);
